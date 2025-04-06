@@ -1,38 +1,45 @@
-const { default: mongoose, model } = require('mongoose')
-const orderSchema = mongoose.Schema({
-    productDetails : {
-        type : Array,
-        default : []
+const { default: mongoose } = require('mongoose');
 
+const orderSchema = mongoose.Schema({
+    productDetails: {
+        type: Array,
+        default: []
     },
-    email : {
-        type : String,
-        default : ""
-    },
-    userId : {
+    email: {
         type: String,
-        default : ""
+        default: ""
     },
-    paymentDetails : {
-        paymentId : {
-            type : String,
-            default : ""
+    userId: {
+        type: String,
+        default: ""
+    },
+    paymentDetails: {
+        paymentId: {
+            type: String,
+            default: ""
         },
-        payment_method_type : [],
-        payment_status : {
-            type : String,
-            default : ""
+        payment_method_type: {
+            type: [String],
+            default: []
+        },
+        payment_status: {
+            type: String,
+            default: ""
         }
     },
-    shipping_options : [],
-    totalAmount : {
+    shipping_options: {
+        type: Array,
+        default: []
+    },
+    totalAmount: {
         type: Number,
-        default : 0
+        default: 0
     }
+}, {
+    timestamps: true
+});
 
-},{
-    timestamps : true
-})
+// ✅ Prevent OverwriteModelError
+const orderModel = mongoose.models.order || mongoose.model('order', orderSchema);
 
-const orderModel = mongoose.model('order',orderSchema)
 module.exports = orderModel;
