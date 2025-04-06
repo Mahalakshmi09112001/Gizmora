@@ -1,5 +1,4 @@
-
-const orderModel = require('../../models/orderProductModel')
+const orderModel = require('../../models/OrderProductModel')
 const stripe = require('../../config/stripe')
 const endpointSecret = process.env.STRIPE_ENDPOINT_WEBHOOK_SECRET_KEY
 
@@ -16,9 +15,11 @@ async function getLineItems(LineItems) {
                 quantity : item.quantity,
                 image : product.image
             }
+            console.log("image",product)
             ProductItems.push(productData)
-            
-           
+
+
+
         }
     }
     return ProductItems
@@ -40,7 +41,7 @@ const webhooks =async(request,response) => {
     switch(event.type){
         case 'checkout.session.completed':
             const session = event.data.object;
-            
+
             const lineItems= await stripe.checkout.sessions.listLineItems(session.id)
 
             const productDetails = await getLineItems(lineItems)
@@ -57,18 +58,18 @@ const webhooks =async(request,response) => {
                 },
                 shipping_options : session.shipping_options.map(s =>{
                     return{
-                       ...s,
+                        ...s,
                         shipping_amount:s.shipping_amount/100
                     }
-                   
+
                 }),
                 totalAmount : session.amount_total /100
 
             }
-            console.log(orderModel); 
+            console.log(orderModel);
             const order=new orderModel(orderDetails)
             const saveOrder = await order.save()
-            
+
             break;
         default:
             console.log(`Unhandled event type ${event.type}`);
