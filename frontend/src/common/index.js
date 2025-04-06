@@ -1,4 +1,4 @@
-const backendDomin = "https://gizmora-backend.onrender.com"
+const backendDomin = "http://localhost:8080"
 
 const SummaryApi = {
     signUP : {
