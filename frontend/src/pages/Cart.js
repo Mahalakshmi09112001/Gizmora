@@ -11,6 +11,7 @@ const Cart = () => {
     const [loading, setLoading] = useState(false);
     const context = useContext(Context);
     const loadingCart = new Array(4).fill(null);
+    const [cartProductCount,setCartProductCount] = useState(0)
 
     // Address State
     const [address, setAddress] = useState({
@@ -23,7 +24,16 @@ const Cart = () => {
     });
     const [errors, setErrors] = useState({});
 
+    const fetchUserAddToCart = async()=>{
+        const dataResponse = await fetch(SummaryApi.addToCartProductCount.url,{
+            method : SummaryApi.addToCartProductCount.method,
+            credentials : 'include'
+        })
 
+        const dataApi = await dataResponse.json()
+
+        setCartProductCount(dataApi?.data?.count)
+    }
     const fetchData = async () => {
         try {
             const response = await fetch(SummaryApi.addToCartProductView.url, {
@@ -119,12 +129,34 @@ const Cart = () => {
             if (responseData?.id) {
                 const stripe = await stripePromise;
                 stripe.redirectToCheckout({ sessionId: responseData.id });
+
+                // After successful checkout, clear the cart in frontend
+                setData([]); // Clear the cart items from frontend state
+                context.fetchUserAddToCart(); // Reset the cart in global context
+
+                // Clear the cart in the backend
+                await fetch(SummaryApi.clearCart.url, {
+                    method: SummaryApi.clearCart.method,
+                    credentials: 'include',
+                    headers: {
+                        "content-type": 'application/json'
+                    }})
+                // Optionally, notify the user
+                toast.success("Payment successful! Your order is being processed.");
             }
         } catch (error) {
             console.error("Error processing payment:", error);
         }
     };
 
+
+    useEffect(()=>{
+        /**user Details */
+        fetchUserAddToCart()
+        /**user Details cart product */
+
+
+    },[])
     const totalQty = data.reduce((prev, curr) => prev + curr.quantity, 0);
     const totalPrice = data.reduce((prev, curr) => prev + (curr.quantity * curr?.productId?.sellingPrice), 0);
 

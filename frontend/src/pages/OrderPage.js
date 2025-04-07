@@ -40,11 +40,6 @@ const OrderPage = () => {
                 {Array.isArray(item.productDetails) && item.productDetails.length > 0 ? (
                   item.productDetails.map((product, idx) => (
                     <div key={product.productId + idx} className="flex gap-3 bg-slate-100 p-3 rounded">
-                      <img
-                        src={product.image?.[0] || '/default-image.png'}
-                        alt={product.name || 'Product'}
-                        className="w-28 h-28 bg-slate-200 object-scale-down"
-                      />
                       <div>
                         <div className="font-medium text-lg line-clamp-1">
                           {product.name || 'No name'}

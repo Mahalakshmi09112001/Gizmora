@@ -1,4 +1,4 @@
-const backendDomin = "https://gizmora-backend.onrender.com"
+const backendDomin = "http://localhost:8080";
 
 const SummaryApi = {
     signUP : {
@@ -101,6 +101,10 @@ const SummaryApi = {
     resetPassword: {
         url: `${backendDomin}/api/reset-password`,
         method: 'post'
+    },
+    clearCart:{
+        url : `${backendDomin}/api/clear-cart`,
+        method : 'post'
     }
 }
 

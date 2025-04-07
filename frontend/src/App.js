@@ -46,7 +46,6 @@ function App() {
     /**user Details */
     fetchUserDetails()
     /**user Details cart product */
-    fetchUserAddToCart()
 
   },[])
   return (
